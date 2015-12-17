@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.AvoidXfermode;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -21,6 +22,7 @@ import android.widget.TimePicker;
 
 import com.google.reminder.R;
 import com.google.reminder.Utils;
+import com.google.reminder.alarm.AlarmHelper;
 import com.google.reminder.model.ModelTask;
 
 import java.util.Calendar;
@@ -152,8 +154,12 @@ public class AddingTaskDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 task.setTitle(etTitle.getText().toString());
+                task.setStatus(ModelTask.STATUS_CURRENT);
                 if (etDate.length() != 0 || etTime.length() != 0) {
                     task.setDate(calendar.getTimeInMillis());
+
+                    AlarmHelper alarmHelper = AlarmHelper.getInstance();
+                    alarmHelper.setAlarm(task);
                 }
                 task.setStatus(ModelTask.STATUS_CURRENT);
                 addingTaskListener.onTaskAdded(task);

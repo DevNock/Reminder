@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.reminder.adapter.TabAdapter;
+import com.google.reminder.alarm.AlarmHelper;
 import com.google.reminder.database.DBHelper;
 import com.google.reminder.dialog.AddingTaskDialogFragment;
 import com.google.reminder.fragment.CurrentTaskFragment;
@@ -46,12 +47,26 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
         PreferenceHelper.getInstance().init(getApplicationContext());  // инициализация PreferenceHelper
         preferenceHelper = PreferenceHelper.getInstance();
 
+        AlarmHelper.getInstance().init(getApplicationContext());
+
         dbHelper = new DBHelper(getApplicationContext());
 
         fragmentManager = getFragmentManager();
         runSplash();
 
         setUI();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApplication.activityResumed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyApplication.activityPaused();
     }
 
     @Override

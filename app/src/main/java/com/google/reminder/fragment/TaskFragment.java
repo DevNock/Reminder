@@ -11,6 +11,7 @@ import android.view.View;
 import com.google.reminder.MainActivity;
 import com.google.reminder.R;
 import com.google.reminder.adapter.TaskAdapter;
+import com.google.reminder.alarm.AlarmHelper;
 import com.google.reminder.model.Item;
 import com.google.reminder.model.ModelTask;
 
@@ -26,6 +27,8 @@ public abstract class TaskFragment extends Fragment {
 
     public MainActivity mainActivity;
 
+    public AlarmHelper alarmHelper;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -33,6 +36,8 @@ public abstract class TaskFragment extends Fragment {
         if(getActivity() != null){
             mainActivity = (MainActivity) getActivity();
         }
+
+        alarmHelper = AlarmHelper.getInstance();
 
         addTaskFromDB();
     }
@@ -97,7 +102,9 @@ public abstract class TaskFragment extends Fragment {
                         @Override
                         public void onViewDetachedFromWindow(View v) {
                             if (isRemoved[0]){
+                                alarmHelper.removeAlarm(timeStamp);
                                 mainActivity.dbHelper.removeTask(timeStamp);
+
                             }
                         }
                     });
@@ -119,7 +126,7 @@ public abstract class TaskFragment extends Fragment {
         dialogBuilder.show();
     }
 
-    public abstract void findTasks(String title);   
+    public abstract void findTasks(String title);
 
     public abstract void addTaskFromDB();
 
