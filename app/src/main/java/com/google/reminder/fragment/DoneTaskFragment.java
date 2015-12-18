@@ -67,7 +67,7 @@ public class DoneTaskFragment extends TaskFragment {
         adapter.removeAllItems();
         List<ModelTask> tasks = new ArrayList<>();
         tasks.addAll(mainActivity.dbHelper.query().getTasks(DBHelper.SELECTION_LIKE_TITLE + " AND " +
-                        DBHelper.SELECTION_STATUS,  new String[]{"%" + title + "%",
+                DBHelper.SELECTION_STATUS, new String[]{"%" + title + "%",
                 Integer.toString(ModelTask.STATUS_DONE)}, DBHelper.TASK_DATE_COLUMN));
         for (int i = 0; i < tasks.size(); i++) {
             addTask(tasks.get(i), false);
@@ -82,6 +82,30 @@ public class DoneTaskFragment extends TaskFragment {
                 new String[]{Integer.toString(ModelTask.STATUS_DONE)}, DBHelper.TASK_DATE_COLUMN));
         for (int i = 0; i < tasks.size(); i++) {
             addTask(tasks.get(i), false);
+        }
+    }
+
+    @Override
+    public void addTask(ModelTask newTask, boolean saveToDB) {
+        int position = -1;
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            if (adapter.getItem(i).isTask()) {
+                ModelTask task = (ModelTask) adapter.getItem(i);
+                if (newTask.getDate() < task.getDate()) {
+                    position = i;
+                    break;
+                }
+            }
+        }
+
+        if (position != -1) {
+            adapter.addItem(position, newTask);
+        } else {
+            adapter.addItem(newTask);
+        }
+
+        if (saveToDB) {
+            mainActivity.dbHelper.saveTask(newTask);
         }
     }
 

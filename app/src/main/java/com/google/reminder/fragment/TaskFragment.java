@@ -1,6 +1,7 @@
 package com.google.reminder.fragment;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.google.reminder.MainActivity;
 import com.google.reminder.R;
 import com.google.reminder.adapter.TaskAdapter;
 import com.google.reminder.alarm.AlarmHelper;
+import com.google.reminder.dialog.EditTaskDialogFragment;
 import com.google.reminder.model.Item;
 import com.google.reminder.model.ModelTask;
 
@@ -42,28 +44,10 @@ public abstract class TaskFragment extends Fragment {
         addTaskFromDB();
     }
 
-    public void addTask(ModelTask newTask, boolean saveToDB) {
-        int position = -1;
+    public abstract void addTask(ModelTask newTask, boolean saveToDB);
 
-        for (int i = 0; i < adapter.getItemCount(); i ++) {
-            if (adapter.getItem(i).isTask()) {
-                ModelTask task = (ModelTask) adapter.getItem(i);
-                if (newTask.getDate() < task.getDate()) {
-                    position = i;
-                    break;
-                }
-            }
-        }
-
-        if (position != -1) {
-            adapter.addItem(position, newTask);
-        } else{
-            adapter.addItem(newTask);
-        }
-
-        if(saveToDB){
-            mainActivity.dbHelper.saveTask(newTask);
-        }
+    public void updateTask(ModelTask task){
+        adapter.updateTask(task);
     }
 
     public void removeTaskDialog(final int location){
@@ -124,6 +108,11 @@ public abstract class TaskFragment extends Fragment {
         }
 
         dialogBuilder.show();
+    }
+
+    public void showTaskEditDialog(ModelTask task){
+        DialogFragment editingTaskDialog = EditTaskDialogFragment.newInstance(task);
+        editingTaskDialog.show(getActivity().getFragmentManager(), "EditTaskDialogFragment");
     }
 
     public abstract void findTasks(String title);

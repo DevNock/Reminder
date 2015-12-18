@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.graphics.AvoidXfermode;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +17,13 @@ import com.google.reminder.Utils;
 import com.google.reminder.fragment.CurrentTaskFragment;
 import com.google.reminder.fragment.TaskFragment;
 import com.google.reminder.model.Item;
+import com.google.reminder.model.ModelSeparator;
 import com.google.reminder.model.ModelTask;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,6 +52,11 @@ public class CurrentTaskAdapter extends TaskAdapter {
                 CircleImageView priority = (CircleImageView) v.findViewById(R.id.cvTaskPriority);
 
                 return new TaskViewHolder(v, title, date, priority);
+            case TYPE_SEPARATOR:
+                View separator = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.model_separator, parent, false);
+                TextView type = (TextView) separator.findViewById(R.id.tvSeparatorName);
+                return new SeparatorViewHolder(separator, type);
             default:
                 return null;
         }
@@ -57,14 +65,14 @@ public class CurrentTaskAdapter extends TaskAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Item item = items.get(position);
+        final Resources resources = holder.itemView.getResources();
 
         if (item.isTask()){
             holder.itemView.setEnabled(true);
             final ModelTask task = (ModelTask) item;
             final TaskViewHolder taskViewHolder = (TaskViewHolder) holder;
-
             final View itemView = taskViewHolder.itemView;
-            final Resources resources = itemView.getResources();
+
 
             taskViewHolder.title.setText(task.getTitle());
             if(task.getDate() != 0) {
@@ -76,10 +84,23 @@ public class CurrentTaskAdapter extends TaskAdapter {
             itemView.setVisibility(View.VISIBLE);
             taskViewHolder.priority.setEnabled(true);
 
+            if(task.getDate() != 0 && task.getDate() < Calendar.getInstance().getTimeInMillis()){
+                itemView.setBackgroundColor(resources.getColor(R.color.gray_200));
+            } else {
+                itemView.setBackgroundColor(resources.getColor(R.color.gray_50));
+            }
+
             taskViewHolder.title.setTextColor(resources.getColor(R.color.primary_text_default_material_light));
             taskViewHolder.date.setTextColor(resources.getColor(R.color.secondary_text_default_material_light));
             taskViewHolder.priority.setColorFilter(resources.getColor(task.getPriorityColor()));
             taskViewHolder.priority.setImageResource(R.drawable.ic_checkbox_blank_circle_white_48dp);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getTaskFragment().showTaskEditDialog(task);
+                }
+            });
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -107,6 +128,8 @@ public class CurrentTaskAdapter extends TaskAdapter {
                     taskViewHolder.title.setTextColor(resources.getColor(R.color.primary_text_disabled_material_light));
                     taskViewHolder.date.setTextColor(resources.getColor(R.color.secondary_text_disabled_material_light));
                     taskViewHolder.priority.setColorFilter(resources.getColor(task.getPriorityColor()));
+
+
 
                     ObjectAnimator flipIn = ObjectAnimator.ofFloat(taskViewHolder.priority, "rotationY", -180f, 0f);
 
@@ -170,6 +193,12 @@ public class CurrentTaskAdapter extends TaskAdapter {
                     flipIn.start();
                 }
             });
+        } else{
+
+            ModelSeparator separator = (ModelSeparator) item;
+            SeparatorViewHolder separatorViewHolder = (SeparatorViewHolder) holder;
+
+            separatorViewHolder.type.setText(resources.getString(separator.getType()));
         }
     }
 

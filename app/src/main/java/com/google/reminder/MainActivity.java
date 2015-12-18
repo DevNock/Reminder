@@ -18,6 +18,7 @@ import com.google.reminder.adapter.TabAdapter;
 import com.google.reminder.alarm.AlarmHelper;
 import com.google.reminder.database.DBHelper;
 import com.google.reminder.dialog.AddingTaskDialogFragment;
+import com.google.reminder.dialog.EditTaskDialogFragment;
 import com.google.reminder.fragment.CurrentTaskFragment;
 import com.google.reminder.fragment.DoneTaskFragment;
 import com.google.reminder.fragment.SplashFragment;
@@ -25,7 +26,7 @@ import com.google.reminder.fragment.TaskFragment;
 import com.google.reminder.model.ModelTask;
 
 public class MainActivity extends AppCompatActivity implements AddingTaskDialogFragment.AddingTaskListener,
-        CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener {
+        CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener, EditTaskDialogFragment.EditingTaskListener {
 
     FragmentManager fragmentManager;
 
@@ -188,5 +189,11 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
     @Override
     public void OnTaskRestore(ModelTask task) {
         currentTaskFragment.addTask(task, false);
+    }
+
+    @Override
+    public void onTaskEdited(ModelTask updateTask) {
+        currentTaskFragment.updateTask(updateTask);
+        dbHelper.update().task(updateTask);
     }
 }
