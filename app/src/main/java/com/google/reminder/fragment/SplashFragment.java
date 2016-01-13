@@ -27,15 +27,15 @@ public class SplashFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
 
         SplashTask splashTask = new SplashTask();
         splashTask.execute();
 
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_splash, container, false);
     }
 
-    class SplashTask extends AsyncTask<Void, Void, Void>{
+    class SplashTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -44,11 +44,15 @@ public class SplashFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (getActivity() !=  null) {
+
+            if (getActivity() != null) {
                 getActivity().getFragmentManager().popBackStack();
             }
-            
+
             return null;
         }
     }
+
+
 }
+

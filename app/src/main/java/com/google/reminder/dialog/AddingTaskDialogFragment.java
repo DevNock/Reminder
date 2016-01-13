@@ -42,9 +42,9 @@ public class AddingTaskDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try{
+        try {
             addingTaskListener = (AddingTaskListener) activity;
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement AddingTaskListener");
         }
     }
@@ -60,16 +60,17 @@ public class AddingTaskDialogFragment extends DialogFragment {
 
         View container = inflater.inflate(R.layout.dialog_task, null);
 
-        final TextInputLayout tilTitle = (TextInputLayout)container.findViewById(R.id.tilDialogTaskTitle);
+        final TextInputLayout tilTitle = (TextInputLayout) container.findViewById(R.id.tilDialogTaskTitle);
         final EditText etTitle = tilTitle.getEditText();
 
-        TextInputLayout tilDate = (TextInputLayout)container.findViewById(R.id.tilDialogTaskDate);
+        TextInputLayout tilDate = (TextInputLayout) container.findViewById(R.id.tilDialogTaskDate);
         final EditText etDate = tilDate.getEditText();
 
-        TextInputLayout tilTime = (TextInputLayout)container.findViewById(R.id.tilDialogTaskTime);
-        final EditText etTime  = tilTime.getEditText();
+        final TextInputLayout tilTime = (TextInputLayout) container.findViewById(R.id.tilDialogTaskTime);
+        final EditText etTime = tilTime.getEditText();
 
         Spinner spPriority = (Spinner) container.findViewById(R.id.spDialogTaskPriority);
+
 
         tilTitle.setHint(getResources().getString(R.string.task_title));
         tilDate.setHint(getResources().getString(R.string.task_date));
@@ -78,6 +79,7 @@ public class AddingTaskDialogFragment extends DialogFragment {
         builder.setView(container);
 
         final ModelTask task = new ModelTask();
+
 
         ArrayAdapter<String> priorityAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_dropdown_item, ModelTask.PRIORITY_LEVELS);
@@ -97,17 +99,16 @@ public class AddingTaskDialogFragment extends DialogFragment {
         });
 
         final Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1 );
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1);
 
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (etDate.length() == 0) {
-                    etDate.setText(" "); // check how to work
+                    etDate.setText(" ");
                 }
 
                 DialogFragment datePickerFragment = new DatePickerFragment() {
-
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         calendar.set(Calendar.YEAR, year);
@@ -121,7 +122,6 @@ public class AddingTaskDialogFragment extends DialogFragment {
                         etDate.setText(null);
                     }
                 };
-
                 datePickerFragment.show(getFragmentManager(), "DatePickerFragment");
             }
         });
@@ -135,7 +135,7 @@ public class AddingTaskDialogFragment extends DialogFragment {
                 DialogFragment timePickerFragment = new TimePickerFragment() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        calendar.set(Calendar.HOUR, hourOfDay);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute);
                         calendar.set(Calendar.SECOND, 0);
                         etTime.setText(Utils.getTime(calendar.getTimeInMillis()));
@@ -146,7 +146,7 @@ public class AddingTaskDialogFragment extends DialogFragment {
                         etTime.setText(null);
                     }
                 };
-                timePickerFragment.show(getFragmentManager(), "TimePickerFragment   ");
+                timePickerFragment.show(getFragmentManager(), "TimePickerFragment");
             }
         });
 
@@ -200,7 +200,6 @@ public class AddingTaskDialogFragment extends DialogFragment {
                             positiveButton.setEnabled(true);
                             tilTitle.setErrorEnabled(false);
                         }
-
                     }
 
                     @Override
@@ -214,3 +213,4 @@ public class AddingTaskDialogFragment extends DialogFragment {
         return alertDialog;
     }
 }
+

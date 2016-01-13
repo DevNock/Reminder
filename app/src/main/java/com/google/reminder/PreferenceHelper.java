@@ -18,12 +18,12 @@ public class PreferenceHelper {
 
     private SharedPreferences preferences;
 
-    private PreferenceHelper(){
+    private PreferenceHelper() {
 
     }
 
-    public static PreferenceHelper getInstance(){
-        if (instance == null){
+    public static PreferenceHelper getInstance() {
+        if (instance ==null) {
             instance = new PreferenceHelper();
         }
         return instance;
@@ -34,14 +34,14 @@ public class PreferenceHelper {
         preferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE);
     }
 
-    public void putBoolean(String key, boolean value){
+    public void putBoolean(String key, boolean value) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
 
-    public boolean getBoolean(String key){
+    public boolean getBoolean(String key) {
         return preferences.getBoolean(key, false);
     }
-
 }
+

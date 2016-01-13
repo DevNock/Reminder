@@ -21,7 +21,6 @@ import com.google.reminder.model.ModelTask;
  * Created by Sergey on 08.12.2015.
  */
 public abstract class TaskFragment extends Fragment {
-
     protected RecyclerView recyclerView;
     protected RecyclerView.LayoutManager layoutManager;
 
@@ -31,11 +30,12 @@ public abstract class TaskFragment extends Fragment {
 
     public AlarmHelper alarmHelper;
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(getActivity() != null){
+        if (getActivity() != null) {
             mainActivity = (MainActivity) getActivity();
         }
 
@@ -46,19 +46,22 @@ public abstract class TaskFragment extends Fragment {
 
     public abstract void addTask(ModelTask newTask, boolean saveToDB);
 
-    public void updateTask(ModelTask task){
+    public void updateTask(ModelTask task) {
         adapter.updateTask(task);
     }
 
-    public void removeTaskDialog(final int location){
+
+    public void removeTaskDialog(final int location) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
 
         dialogBuilder.setMessage(R.string.dialog_removing_message);
 
         Item item = adapter.getItem(location);
 
-        if(item.isTask()){
-            ModelTask removingTask = (ModelTask)item;
+        if (item.isTask()) {
+
+            ModelTask removingTask = (ModelTask) item;
+
             final long timeStamp = removingTask.getTimeStamp();
             final boolean[] isRemoved = {false};
 
@@ -85,7 +88,7 @@ public abstract class TaskFragment extends Fragment {
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            if (isRemoved[0]){
+                            if (isRemoved[0]) {
                                 alarmHelper.removeAlarm(timeStamp);
                                 mainActivity.dbHelper.removeTask(timeStamp);
 
@@ -95,7 +98,9 @@ public abstract class TaskFragment extends Fragment {
 
                     snackbar.show();
 
+
                     dialog.dismiss();
+
                 }
             });
 
@@ -105,15 +110,17 @@ public abstract class TaskFragment extends Fragment {
                     dialog.cancel();
                 }
             });
+
         }
 
         dialogBuilder.show();
     }
 
-    public void showTaskEditDialog(ModelTask task){
+    public void showTaskEditDialog(ModelTask task) {
         DialogFragment editingTaskDialog = EditTaskDialogFragment.newInstance(task);
         editingTaskDialog.show(getActivity().getFragmentManager(), "EditTaskDialogFragment");
     }
+
 
     public abstract void findTasks(String title);
 
@@ -121,3 +128,4 @@ public abstract class TaskFragment extends Fragment {
 
     public abstract void moveTask(ModelTask task);
 }
+

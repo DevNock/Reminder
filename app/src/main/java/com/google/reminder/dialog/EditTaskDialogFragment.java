@@ -31,7 +31,8 @@ import java.util.Calendar;
  * Created by Sergey on 18.12.2015.
  */
 public class EditTaskDialogFragment extends DialogFragment {
-    public static EditTaskDialogFragment newInstance(ModelTask task){
+
+    public static EditTaskDialogFragment newInstance(ModelTask task) {
         EditTaskDialogFragment editTaskDialogFragment = new EditTaskDialogFragment();
 
         Bundle args = new Bundle();
@@ -46,16 +47,16 @@ public class EditTaskDialogFragment extends DialogFragment {
 
     private EditingTaskListener editingTaskListener;
 
-    public interface EditingTaskListener{
-        void onTaskEdited(ModelTask updateTask);
+    public interface EditingTaskListener {
+        void onTaskEdited(ModelTask updatedTask);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try{
+        try {
             editingTaskListener = (EditingTaskListener) activity;
-        } catch(ClassCastException e){
+        } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement EditingTaskListener");
         }
     }
@@ -65,8 +66,8 @@ public class EditTaskDialogFragment extends DialogFragment {
 
         Bundle args = getArguments();
         String title = args.getString("title");
-        long date = args.getLong("date");
-        int priority = args.getInt("priority");
+        long date = args.getLong("date", 0);
+        int priority = args.getInt("priority", 0);
         long timeStamp = args.getLong("time_stamp", 0);
 
         final ModelTask task = new ModelTask(title, date, priority, 0, timeStamp);
@@ -79,29 +80,33 @@ public class EditTaskDialogFragment extends DialogFragment {
 
         View container = inflater.inflate(R.layout.dialog_task, null);
 
-        final TextInputLayout tilTitle = (TextInputLayout)container.findViewById(R.id.tilDialogTaskTitle);
+        final TextInputLayout tilTitle = (TextInputLayout) container.findViewById(R.id.tilDialogTaskTitle);
         final EditText etTitle = tilTitle.getEditText();
 
-        TextInputLayout tilDate = (TextInputLayout)container.findViewById(R.id.tilDialogTaskDate);
+        TextInputLayout tilDate = (TextInputLayout) container.findViewById(R.id.tilDialogTaskDate);
         final EditText etDate = tilDate.getEditText();
 
-        TextInputLayout tilTime = (TextInputLayout)container.findViewById(R.id.tilDialogTaskTime);
-        final EditText etTime  = tilTime.getEditText();
+        final TextInputLayout tilTime = (TextInputLayout) container.findViewById(R.id.tilDialogTaskTime);
+        final EditText etTime = tilTime.getEditText();
 
         Spinner spPriority = (Spinner) container.findViewById(R.id.spDialogTaskPriority);
 
+
         etTitle.setText(task.getTitle());
         etTitle.setSelection(etTitle.length());
-        if(task.getDate() != 0){
+        if (task.getDate() != 0) {
             etDate.setText(Utils.getDate(task.getDate()));
             etTime.setText(Utils.getTime(task.getDate()));
         }
+
 
         tilTitle.setHint(getResources().getString(R.string.task_title));
         tilDate.setHint(getResources().getString(R.string.task_date));
         tilTime.setHint(getResources().getString(R.string.task_time));
 
         builder.setView(container);
+
+
 
         ArrayAdapter<String> priorityAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_dropdown_item, ModelTask.PRIORITY_LEVELS);
@@ -123,8 +128,8 @@ public class EditTaskDialogFragment extends DialogFragment {
         });
 
         final Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1 );
-        if(etDate.length() != 0 || etTime.length() != 0){
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1);
+        if (etDate.length() != 0 || etTime.length() != 0) {
             calendar.setTimeInMillis(task.getDate());
         }
 
@@ -132,11 +137,10 @@ public class EditTaskDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (etDate.length() == 0) {
-                    etDate.setText(" "); // check how to work
+                    etDate.setText(" ");
                 }
 
                 DialogFragment datePickerFragment = new DatePickerFragment() {
-
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         calendar.set(Calendar.YEAR, year);
@@ -150,7 +154,6 @@ public class EditTaskDialogFragment extends DialogFragment {
                         etDate.setText(null);
                     }
                 };
-
                 datePickerFragment.show(getFragmentManager(), "DatePickerFragment");
             }
         });
@@ -164,7 +167,7 @@ public class EditTaskDialogFragment extends DialogFragment {
                 DialogFragment timePickerFragment = new TimePickerFragment() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        calendar.set(Calendar.HOUR, hourOfDay);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute);
                         calendar.set(Calendar.SECOND, 0);
                         etTime.setText(Utils.getTime(calendar.getTimeInMillis()));
@@ -175,7 +178,7 @@ public class EditTaskDialogFragment extends DialogFragment {
                         etTime.setText(null);
                     }
                 };
-                timePickerFragment.show(getFragmentManager(), "TimePickerFragment   ");
+                timePickerFragment.show(getFragmentManager(), "TimePickerFragment");
             }
         });
 
@@ -228,7 +231,6 @@ public class EditTaskDialogFragment extends DialogFragment {
                             positiveButton.setEnabled(true);
                             tilTitle.setErrorEnabled(false);
                         }
-
                     }
 
                     @Override
@@ -242,3 +244,4 @@ public class EditTaskDialogFragment extends DialogFragment {
         return alertDialog;
     }
 }
+

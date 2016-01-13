@@ -25,8 +25,10 @@ import com.google.reminder.fragment.SplashFragment;
 import com.google.reminder.fragment.TaskFragment;
 import com.google.reminder.model.ModelTask;
 
-public class MainActivity extends AppCompatActivity implements AddingTaskDialogFragment.AddingTaskListener,
-        CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener, EditTaskDialogFragment.EditingTaskListener {
+public class MainActivity extends AppCompatActivity
+        implements AddingTaskDialogFragment.AddingTaskListener,
+        CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener,
+        EditTaskDialogFragment.EditingTaskListener {
 
     FragmentManager fragmentManager;
 
@@ -45,14 +47,16 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PreferenceHelper.getInstance().init(getApplicationContext());  // инициализация PreferenceHelper
+        PreferenceHelper.getInstance().init(getApplicationContext());
         preferenceHelper = PreferenceHelper.getInstance();
+
 
         AlarmHelper.getInstance().init(getApplicationContext());
 
         dbHelper = new DBHelper(getApplicationContext());
 
         fragmentManager = getFragmentManager();
+
         runSplash();
 
         setUI();
@@ -74,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         MenuItem splashItem = menu.findItem(R.id.action_splash);
         splashItem.setChecked(preferenceHelper.getBoolean(PreferenceHelper.SPLASH_IS_INVISIBLE));
         return true;
@@ -91,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
         if (id == R.id.action_splash) {
             item.setChecked(!item.isChecked());
             preferenceHelper.putBoolean(PreferenceHelper.SPLASH_IS_INVISIBLE, item.isChecked());
-
             return true;
         }
 
@@ -99,16 +101,18 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
     }
 
     public void runSplash() {
-        if (!preferenceHelper.getBoolean(PreferenceHelper.SPLASH_IS_INVISIBLE)) {
+        if(!preferenceHelper.getBoolean(PreferenceHelper.SPLASH_IS_INVISIBLE)) {
             SplashFragment splashFragment = new SplashFragment();
 
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, splashFragment)
-                    .addToBackStack(null).commit();
+                    .addToBackStack(null)
+                    .commit();
         }
+
     }
 
-    public void setUI() {
+    private void setUI() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -141,12 +145,15 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+
+
         });
 
         currentTaskFragment = (CurrentTaskFragment) tabAdapter.getItem(TabAdapter.CURRENT_TASK_FRAGMENT_POSITION);
         doneTaskFragment = (DoneTaskFragment) tabAdapter.getItem(TabAdapter.DONE_TASK_FRAGMENT_POSITION);
 
         searchView = (SearchView) findViewById(R.id.search_view);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -160,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
                 return false;
             }
         });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -178,7 +186,8 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
 
     @Override
     public void onTaskAddingCancel() {
-        Toast.makeText(this, "Task adding cancel.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Task adding cancel", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -187,13 +196,14 @@ public class MainActivity extends AppCompatActivity implements AddingTaskDialogF
     }
 
     @Override
-    public void OnTaskRestore(ModelTask task) {
+    public void onTaskRestore(ModelTask task) {
         currentTaskFragment.addTask(task, false);
     }
 
     @Override
-    public void onTaskEdited(ModelTask updateTask) {
-        currentTaskFragment.updateTask(updateTask);
-        dbHelper.update().task(updateTask);
+    public void onTaskEdited(ModelTask updatedTask) {
+        currentTaskFragment.updateTask(updatedTask);
+        dbHelper.update().task(updatedTask);
     }
 }
+
