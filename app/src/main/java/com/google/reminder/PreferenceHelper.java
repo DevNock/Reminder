@@ -3,7 +3,6 @@ package com.google.reminder;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.util.prefs.PreferenceChangeEvent;
 
 /**
  * Created by Sergey on 07.11.2015.

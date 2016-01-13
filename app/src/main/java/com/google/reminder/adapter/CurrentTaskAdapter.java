@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
-import android.graphics.AvoidXfermode;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,16 +14,11 @@ import android.widget.TextView;
 import com.google.reminder.R;
 import com.google.reminder.Utils;
 import com.google.reminder.fragment.CurrentTaskFragment;
-import com.google.reminder.fragment.TaskFragment;
 import com.google.reminder.model.Item;
 import com.google.reminder.model.ModelSeparator;
 import com.google.reminder.model.ModelTask;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

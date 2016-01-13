@@ -2,8 +2,6 @@ package com.google.reminder.fragment;
 
 
 import android.app.Activity;
-import android.app.ListFragment;
-import android.graphics.AvoidXfermode;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.google.reminder.R;
 import com.google.reminder.adapter.CurrentTaskAdapter;
-import com.google.reminder.adapter.TaskAdapter;
 import com.google.reminder.database.DBHelper;
 import com.google.reminder.model.ModelSeparator;
 import com.google.reminder.model.ModelTask;
@@ -83,6 +80,14 @@ public class CurrentTaskFragment extends TaskFragment {
                         Integer.toString(ModelTask.STATUS_OVERDUE)}, DBHelper.TASK_DATE_COLUMN));
         for (int i = 0; i < tasks.size(); i++) {
             addTask(tasks.get(i), false);
+        }
+    }
+
+    @Override
+    public void checkAdapter() {
+        if(adapter == null){
+            adapter = new CurrentTaskAdapter(this);
+            addTaskFromDB();
         }
     }
 

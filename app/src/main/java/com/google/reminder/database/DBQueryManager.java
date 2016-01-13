@@ -2,7 +2,6 @@ package com.google.reminder.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.AvoidXfermode;
 
 import com.google.reminder.model.ModelTask;
 

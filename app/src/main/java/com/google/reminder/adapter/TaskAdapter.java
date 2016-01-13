@@ -1,6 +1,5 @@
 package com.google.reminder.adapter;
 
-import android.graphics.AvoidXfermode;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -9,8 +8,6 @@ import com.google.reminder.fragment.TaskFragment;
 import com.google.reminder.model.Item;
 import com.google.reminder.model.ModelSeparator;
 import com.google.reminder.model.ModelTask;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

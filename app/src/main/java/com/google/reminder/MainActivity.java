@@ -2,6 +2,7 @@ package com.google.reminder;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -60,6 +61,11 @@ public class MainActivity extends AppCompatActivity
         runSplash();
 
         setUI();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+
     }
 
     @Override
