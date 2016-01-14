@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.google.reminder.R;
 import com.google.reminder.adapter.CurrentTaskAdapter;
+import com.google.reminder.adapter.DoneTaskAdapter;
 import com.google.reminder.database.DBHelper;
 import com.google.reminder.model.ModelSeparator;
 import com.google.reminder.model.ModelTask;
@@ -84,14 +85,6 @@ public class CurrentTaskFragment extends TaskFragment {
     }
 
     @Override
-    public void checkAdapter() {
-        if(adapter == null){
-            adapter = new CurrentTaskAdapter(this);
-            addTaskFromDB();
-        }
-    }
-
-    @Override
     public void addTaskFromDB() {
         adapter.removeAllItems();
         List<ModelTask> tasks = new ArrayList<>();
@@ -123,8 +116,19 @@ public class CurrentTaskFragment extends TaskFragment {
         if (newTask.getDate() != 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(newTask.getDate());
-
-            if (calendar.get(Calendar.DAY_OF_YEAR) < Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
+            if (calendar.get(Calendar.YEAR) < Calendar.getInstance().get(Calendar.YEAR)) {
+                newTask.setDateStatus(ModelSeparator.TYPE_OVERDUE);
+                if (!adapter.containsSeparatorOverdue) {
+                    adapter.containsSeparatorOverdue = true;
+                    separator = new ModelSeparator(ModelSeparator.TYPE_OVERDUE);
+                }
+            } else if (calendar.get(Calendar.YEAR) > Calendar.getInstance().get(Calendar.YEAR)){
+                newTask.setDateStatus(ModelSeparator.TYPE_FUTURE);
+                if (!adapter.containsSeparatorFuture) {
+                    adapter.containsSeparatorFuture = true;
+                    separator = new ModelSeparator(ModelSeparator.TYPE_FUTURE);
+                }
+            } else if (calendar.get(Calendar.DAY_OF_YEAR) < Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
                 newTask.setDateStatus(ModelSeparator.TYPE_OVERDUE);
                 if (!adapter.containsSeparatorOverdue) {
                     adapter.containsSeparatorOverdue = true;
@@ -143,7 +147,7 @@ public class CurrentTaskFragment extends TaskFragment {
                     separator = new ModelSeparator(ModelSeparator.TYPE_TOMORROW);
                 }
             } else if (calendar.get(Calendar.DAY_OF_YEAR) > Calendar.getInstance().get(Calendar.DAY_OF_YEAR) + 1) {
-                newTask.setDateStatus(ModelSeparator.TYPE_TOMORROW);
+                newTask.setDateStatus(ModelSeparator.TYPE_FUTURE);
                 if (!adapter.containsSeparatorFuture) {
                     adapter.containsSeparatorFuture = true;
                     separator = new ModelSeparator(ModelSeparator.TYPE_FUTURE);
@@ -184,9 +188,18 @@ public class CurrentTaskFragment extends TaskFragment {
     }
 
     @Override
+    public void checkAdapter() {
+        if(adapter == null){
+            adapter = new CurrentTaskAdapter(this);
+            addTaskFromDB();
+        }
+    }
+
+    @Override
     public void moveTask(ModelTask task) {
         alarmHelper.removeAlarm(task.getTimeStamp());
         onTaskDoneListener.onTaskDone(task);
     }
 }
+
 
